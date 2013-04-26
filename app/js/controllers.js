@@ -7,11 +7,11 @@ angular.module('myApp.controllers', []).
   controller('MyCtrl1', ['$scope', function($scope) {
     
     $scope.data = [];
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 1000; i++) {
       $scope.data.push({
         x: i,
-        one: parseInt(Math.sin(1/i)*100),
-        two: parseInt(Math.cos(1/i)*100)
+        one: Math.sin(i/10)*10,
+        two: Math.cos(i/10)*200
       })
     }
     
