@@ -153,6 +153,63 @@ angular.module('x-utils', [])
         return sum/n;
       },
       
+      getLineData: function(series, abscissas, data) {
+        var lineData = [];
+        
+        series.forEach(function(s) {
+          if (s.type !== 'line') {
+            return;
+          }
+          
+          var seriesData = {
+            name: s.y,
+            axis: s.axis || 'y',
+            seriesIndex: lineData.length,
+            values: []
+          };
+          
+          data.forEach(function(row) {
+            seriesData.values.push({
+              x: row[abscissas],
+              axis: 'y',
+              value: row[s.y]
+            })
+          })
+          
+          lineData.push(seriesData);
+          
+        });
+          
+        return lineData;
+      },
+      
+      getPlotData: function(series, abscissas, data) {
+        var plotData = [];
+        
+        data.forEach(function(d) {
+          var row = {values: []};
+          
+          series.forEach(function(s, i) {
+            if (s.type === 'plot') {
+              row.values.push({
+                seriesIndex:row.values.length,
+                name: s.y,
+                value: d[s.y],
+                axis: s.axis || 'y',
+                abscissa: d[abscissas]
+              })
+            }
+          });
+          
+          row[abscissas] = d[abscissas];
+          
+          plotData.push(row);
+          
+        });
+        
+        return plotData;
+      },
+      
       getColumnData: function(series, abscissas, data) {
         var colData = [];
         

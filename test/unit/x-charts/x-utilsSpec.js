@@ -56,6 +56,37 @@ describe('x-utils', function() {
       expect(expected).toEqual(xUtil.getColumnData(options.series, options.abscissas, data));
     }));
     
+    it('should compute lines data', inject(function(xUtil) {
+      var data = [
+        {x: 0, y: 1, y2: 2},
+        {x: 1, y: 3, y2: 6},
+        {x: 2, y: -4, y2: 2},
+        {x: 4, y: 0, y2: 0}
+      ];
+      
+      var options = {
+        abscissas: 'x',
+        series: [
+          {y: 'y', type: 'column'},
+          {y: 'y2', type: 'line'}
+        ]
+      };
+      
+      var expected = [{
+        name: 'y2',
+        axis: 'y',
+        seriesIndex: 0,
+        values: [
+          {x: 0, value: 2, axis: 'y'},
+          {x: 1, value: 6, axis: 'y'},
+          {x: 2, value: 2, axis: 'y'},
+          {x: 4, value: 0, axis: 'y'}
+        ]
+      }];
+      
+      expect(expected).toEqual(xUtil.getLineData(options.series, options.abscissas, data));
+    }));
+    
   });
   
 });

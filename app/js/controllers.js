@@ -4,34 +4,35 @@ angular.module('myApp.controllers', []).
 
   controller('MyCtrl1', ['$scope', function($scope) {
     
-    $scope.data = [];
-    $scope.amount = 10;
-    $scope.stats = '';
+    $scope.max = 10;
     
     $scope.calculate = function() {
       var a = new Date().getTime();
       
       var data = [];
-      for (var i = 1; i < $scope.amount; i++) {
+      for (var i = 0.1; i < $scope.amount; i+=.1) {
         data.push({
-          x: i/10,
-          one: Math.abs(Math.sin(i)),
-          two: Math.sin(i*i),
-          three: Math.abs(Math.sin(1/i)),
-          four: Math.abs(Math.sin(i)/i),
-          five: Math.abs(Math.sin(i/5)*100),
-          six: Math.abs(Math.sin(i/6)*100),
-          seven: Math.abs(Math.sin(i/7)),
-          eight: Math.abs(Math.sin(i/8))
+          x: i,
+          one: Math.sin(i),
+          two: Math.sin(0.2*i),
+          three: Math.cos(i),
+          four: Math.cos(i*i),
+          five: Math.sin(1/i),
+          six: Math.cos(1/i),
+          seven: Math.sin(2*i),
+          eight: Math.cos(2*i)
         })
       }
       var b = new Date().getTime();
-      console.debug($scope.amount + " rows generated in " + (b - a) + " ms");
+      console.debug($scope.amount*10 + " rows generated in " + (b - a) + " ms");
       
-      $scope.data = data;
+      $scope.options = {
+        data: data,
+        options: options
+      }
     };
     
-    $scope.options = {
+    var options = {
       seriesPadding: 10,
       abscissas: 'x',
       axes: {
@@ -43,10 +44,14 @@ angular.module('myApp.controllers', []).
         }
       },
       series: [
-        {y: 'one', axis: 'y', type: 'plot'},
+        {y: 'one', axis: 'y', type: 'line'},
         {y: 'two', axis: 'y', type: 'column'},
-        {y: 'five', axis: 'y2', type: 'column'},
-        {y: 'six', axis: 'y2', type: 'area'},
+        {y: 'three', axis: 'y', type: 'plot'},
+        {y: 'four', axis: 'y', type: 'line'},
+        {y: 'five', axis: 'y', type: 'plot'},
+        {y: 'six', axis: 'y', type: 'colum'},
+        {y: 'seven', axis: 'y', type: 'line'},
+        {y: 'eight', axis: 'y', type: 'line'},
       ]
     };
     
