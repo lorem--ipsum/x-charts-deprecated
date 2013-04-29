@@ -1,10 +1,9 @@
 'use strict';
 
-angular.module('x-column', [])
+angular.module('x-chart', [])
 
-.directive('columnChart', ['xUtil', function(xUtil) {
+.directive('chart', ['xUtil', function(xUtil) {
   var link = function(scope, element, attrs, ctrl) {
-    
     var b = xUtil.bootstrap(960, 500, element[0]);
       
     var x1 = d3.scale.ordinal();
@@ -19,14 +18,16 @@ angular.module('x-column', [])
         return;
       }
       
+      var columnSeries = options.series.filter(function(s) {return s.type === 'column'});
+      
       var padding = Math.max(0, options.seriesPadding);
-      var seriesWidth = Math.max(5, b.width / data.length / options.series.length - padding);
+      var seriesWidth = Math.max(5, b.width / data.length / columnSeries.length - padding);
       
-      x1.domain(options.series.map(function(serie) {return serie.y;}))
-        .rangeRoundBands([0, options.series.length * seriesWidth]);
+      x1.domain(columnSeries.map(function(serie) {return serie.y;}))
+        .rangeRoundBands([0, columnSeries.length * seriesWidth]);
       
       
-      var step = xUtil.getAverageStep(data, options.abscissas);
+      var step = columnSeries.length ? xUtil.getAverageStep(data, options.abscissas) : 0;
       b.scales.x.domain([
         d3.min(data, function(d) {return d[options.abscissas];}) - step,
         d3.max(data, function(d) {return d[options.abscissas];}) + step
@@ -41,33 +42,33 @@ angular.module('x-column', [])
         xUtil.addY2Axis(b, options.axes.y2.label);
       }
       
-      var abscissa = b.svg.selectAll(".abscissa")
-        .data(data)
-        .enter().append("g")
-        .attr("class", "g")
-        .attr("transform", function(d) {
-            return "translate(" + (
-                b.scales.x(d[options.abscissas]) - options.series.length*seriesWidth/2
-            ) + ",0)";
-        });
-
-      xUtil.straightenData(options.series, options.abscissas, data);
+      var colData = xUtil.getColumnData(options.series, options.abscissas, data);
       
-      abscissa.selectAll("rect")
+      var colGroup = b.svg.selectAll(".colGroup")
+        .data(colData)
+        .enter().append("g")
+          .attr("class", ".colGroup")
+          .attr("transform", function(d) {
+            return "translate(" + (
+              b.scales.x(d[options.abscissas]) - columnSeries.length*seriesWidth/2
+            ) + ",0)";
+          }); 
+
+      colGroup.selectAll("rect")
         .data(function(d) { return d.values; })
         .enter().append("rect")
-        .attr("width", seriesWidth)
-        .attr("x", function(d) { return x1(d.seriesIndex); })
-        .attr("y", function(d) { return b.scales[d.axis](Math.max(0, d.value)); })
-        .attr("height", function(d) { return Math.abs(b.scales[d.axis](d.value) - b.scales[d.axis](0)); })
-        .style("fill", function(d) { return colors(d.name); })
-        .style("fill-opacity", .8)
-        .on("mouseover", function(d) {
-          xUtil.tooltipEnter(d3.select(this), b.tooltip, d, colors);
-        })
-        .on("mouseout", function(d) {
-          xUtil.tooltipExit(d3.select(this), b.tooltip, d, colors);
-        })
+          .attr("width", seriesWidth)
+          .attr("x", function(d) { return x1(d.seriesIndex); })
+          .attr("y", function(d) { return b.scales[d.axis](Math.max(0, d.value)); })
+          .attr("height", function(d) { return Math.abs(b.scales[d.axis](d.value) - b.scales[d.axis](0)); })
+          .style("fill", function(d) { return colors(d.name); })
+          .style("fill-opacity", .8)
+          .on("mouseover", function(d) {
+            xUtil.tooltipEnter(d3.select(this), b.tooltip, d, colors);
+          })
+          .on("mouseout", function(d) {
+            xUtil.tooltipExit(d3.select(this), b.tooltip, d, colors);
+          })
     }
       
     scope.$watch('options', scope.redraw, true); // true -> deep watching

@@ -142,6 +142,44 @@ angular.module('x-utils', [])
           .style("opacity", 0);
       },
       
+      getAverageStep: function(data, field) {
+        var sum = 0;
+        var n = data.length - 1;
+        
+        for (var i = 0; i<n; i++) {
+          sum += data[i + 1][field] - data[i][field];
+        }
+        
+        return sum/n;
+      },
+      
+      getColumnData: function(series, abscissas, data) {
+        var colData = [];
+        
+        data.forEach(function(d) {
+          var row = {values: []};
+          
+          series.forEach(function(s, i) {
+            if (s.type === 'column') {
+              row.values.push({
+                seriesIndex:row.values.length,
+                name: s.y,
+                value: d[s.y],
+                axis: s.axis || 'y',
+                abscissa: d[abscissas]
+              })
+            }
+          });
+          
+          row[abscissas] = d[abscissas];
+          
+          colData.push(row);
+          
+        });
+        
+        return colData;
+      },
+      
       straightenData: function(series, abscissas, data) {
         data.forEach(function(d) {
           d.values = series.map(function(s, i) {
