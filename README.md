@@ -1,5 +1,1 @@
-# x-charts -- the allmighty charts lib for AngularJS
-
-X-charts is a set of directives built for [AngularJS](http://angularjs.org/) applications. It makes an extensive use of the wonderful [D3.js](http://d3js.org/) library.
-
-_Note: this project is still in development._
+#This project has been deprecated because someof a lack of awesomeness regarding [this one](https://github.com/n3-charts/line-chart).
